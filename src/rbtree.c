@@ -148,7 +148,7 @@ node_t *rbtree_insert(rbtree *t, const key_t key) {
 
   rbtree_insert_fix(t, new_node);
 
-  return t->root;
+  return new_node;
 }
 
 node_t *rbtree_find(const rbtree *t, const key_t key) {
