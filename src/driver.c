@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
     rbtree_display(t, t->root);
 
     node_t *n;
-    n = rbtree_find(t, 8);
+    n = rbtree_find(t, 6);
     printf("%d\n", n->key);
 
     rbtree *sub_t = new_rbtree();
@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
     printf("%d\n", rbtree_min(sub_t)->key);
     printf("%d\n", rbtree_max(sub_t)->key);
 
-    rbtree_erase(t, t->root->left);
+    rbtree_erase(t, n);
 
     rbtree_display(t, t->root);
 

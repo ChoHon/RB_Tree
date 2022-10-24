@@ -13,7 +13,7 @@ rbtree *new_rbtree(void) {
   nil->parent = NULL;
 
   p->nil = nil;
-  p->root = NULL;
+  p->root = nil;
 
   return p;
 }
@@ -45,7 +45,7 @@ void rbtree_rotateRight(rbtree *t, node_t *parent_n) {
   // 왼쪽 자식을 자신의 부모와 붙인다
   left_child->parent = parent_n->parent;
   //자신의 부모가 없으면 root
-  if (parent_n->parent == NULL) t->root = left_child;
+  if (parent_n->parent == t->nil) t->root = left_child;
   else {
     if (parent_n == parent_n->parent->left) parent_n->parent->left = left_child;
     else parent_n->parent->right = left_child;
@@ -66,7 +66,7 @@ void rbtree_rotateLeft(rbtree *t, node_t *parent_n) {
   // 오른쪽 자식을 자신의 부모와 붙인다
   right_child->parent = parent_n->parent;
   //자신의 부모가 없으면 root
-  if (parent_n->parent == NULL) t->root = right_child;
+  if (parent_n->parent == t->nil) t->root = right_child;
   else {
     if (parent_n == parent_n->parent->left) parent_n->parent->left = right_child;
     else parent_n->parent->right = right_child;
@@ -126,11 +126,11 @@ node_t *rbtree_insert(rbtree *t, const key_t key) {
   node_t *new_node = (node_t *)malloc(sizeof(node_t));
   new_node->color = RBTREE_RED;
   new_node->key = key;
-  new_node->parent = NULL;
+  new_node->parent = t->nil;
   new_node->left = t->nil;
   new_node->right = t->nil;
 
-  if (t->root == NULL) t->root = new_node;
+  if (t->root == t->nil) t->root = new_node;
   else {
     node_t *cur_node = t->root;
     node_t *prev_node = NULL;
@@ -159,11 +159,13 @@ node_t *rbtree_find(const rbtree *t, const key_t key) {
     else cur_node = cur_node->right;
   }
 
-  if (cur_node->key == key) return cur_node;
+  if (cur_node->key == key && cur_node != t->nil) return cur_node;
   else return NULL;
 }
 
 node_t *rbtree_min(const rbtree *t) {
+  if (t->root == t->nil) return NULL;
+
   node_t *cur_node = t->root;
 
   while (cur_node->left != t->nil) cur_node = cur_node->left;
@@ -172,6 +174,8 @@ node_t *rbtree_min(const rbtree *t) {
 }
 
 node_t *rbtree_max(const rbtree *t) {
+  if (t->root == t->nil) return NULL;
+  
   node_t *cur_node = t->root;
 
   while (cur_node->right != t->nil) cur_node = cur_node->right;
@@ -182,7 +186,7 @@ node_t *rbtree_max(const rbtree *t) {
 void rbtree_erase_fix(rbtree *t, node_t *successor) {
   node_t *sibling = NULL;
 
-  while (successor->parent != NULL && successor->color == RBTREE_BLACK) {
+  while (successor->parent != t->nil && successor->color == RBTREE_BLACK) {
     if (successor == successor->parent->left) {
       sibling = successor->parent->right;
 
@@ -251,7 +255,7 @@ void rbtree_erase_fix(rbtree *t, node_t *successor) {
 int rbtree_erase(rbtree *t, node_t *p) {
   node_t *removed = NULL;
   node_t *successor = NULL;
-  node_t *target = rbtree_find(t, p->key);
+  node_t *target = p;
 
   if (target == NULL) return -1;
 
@@ -269,8 +273,9 @@ int rbtree_erase(rbtree *t, node_t *p) {
   if (removed->left != t->nil) successor = removed->left;
   else successor = removed->right;
 
+  if (successor == t->nil) t->nil->parent = removed;
   successor->parent = removed->parent;
-  if (removed->parent == NULL) t->root = successor;
+  if (removed->parent == t->nil) t->root = successor;
   else {
     if(removed == removed->parent->left) removed->parent->left = successor;
     else removed->parent->right = successor;
