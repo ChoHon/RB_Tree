@@ -1,6 +1,7 @@
 #include "rbtree.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 
 int main(int argc, char *argv[]) {
     rbtree *t = new_rbtree();
@@ -22,37 +23,41 @@ int main(int argc, char *argv[]) {
     rbtree_insert(t, 990);
     rbtree_insert(t, 25);
 
-    node_t *n = rbtree_find(t, 10);
-    rbtree_erase(t, n);
+    int n = 14;
+    key_t *res = calloc(n, sizeof(key_t));
+    rbtree_to_array(t, res, n);
 
-    n = rbtree_find(t, 5);
-    rbtree_erase(t, n);
+    // node_t *n = rbtree_find(t, 10);
+    // rbtree_erase(t, n);
 
-    n = rbtree_find(t, 8);
-    rbtree_erase(t, n);
+    // n = rbtree_find(t, 5);
+    // rbtree_erase(t, n);
 
-    n = rbtree_find(t, 34);
-    rbtree_erase(t, n);
+    // n = rbtree_find(t, 8);
+    // rbtree_erase(t, n);
 
-    n = rbtree_find(t, 67);
-    rbtree_erase(t, n);
+    // n = rbtree_find(t, 34);
+    // rbtree_erase(t, n);
 
-    n = rbtree_find(t, 23);
-    rbtree_erase(t, n);
+    // n = rbtree_find(t, 67);
+    // rbtree_erase(t, n);
 
-    n = rbtree_find(t, 156);
-    rbtree_erase(t, n);
+    // n = rbtree_find(t, 23);
+    // rbtree_erase(t, n);
 
-    n = rbtree_find(t, 24);
-    rbtree_erase(t, n);
+    // n = rbtree_find(t, 156);
+    // rbtree_erase(t, n);
 
-    n = rbtree_find(t, 2);
-    rbtree_erase(t, n);
+    // n = rbtree_find(t, 24);
+    // rbtree_erase(t, n);
 
-    n = rbtree_find(t, 12);
-    rbtree_erase(t, n);
+    // n = rbtree_find(t, 2);
+    // rbtree_erase(t, n);
 
-    rbtree_display(t, t->root);
+    // n = rbtree_find(t, 12);
+    // rbtree_erase(t, n);
+
+    // delete_rbtree(t);
 
     // node_t *n;
     // n = rbtree_find(t, 6);
