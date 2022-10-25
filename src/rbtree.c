@@ -231,7 +231,7 @@ void rbtree_erase_fix(rbtree *t, node_t *successor) {
           successor = successor->parent;
         }
         else {
-          if (sibling->right->color == RBTREE_RED) {
+          if (sibling->right->color == RBTREE_RED)    {
             sibling->right->color = RBTREE_BLACK;
             sibling->color = RBTREE_RED;
 
@@ -252,27 +252,34 @@ void rbtree_erase_fix(rbtree *t, node_t *successor) {
   successor->color = RBTREE_BLACK;
 }
 
-int rbtree_erase(rbtree *t, node_t *p) {
+int rbtree_erase(rbtree *t, node_t *target) {
   node_t *removed = NULL;
   node_t *successor = NULL;
-  node_t *target = p;
 
+  // 삭제할 노드가 트리에 없으면
   if (target == NULL) return -1;
 
+  // 삭제할 노드의 자식이 둘 다 있지 않을때
   if (target->left == t->nil || target->right == t->nil) {
     removed = target;
-  } else {
-    rbtree *right_sub_tree = new_rbtree();
+  } 
+  // 삭제할 노드의 자식이 둘 다 있을 때
+  else {
+    // 오른쪽 서브트리의 최소값을 대체 노드로 선택
+    rbtree *right_sub_tree = (rbtree *)calloc(1, sizeof(rbtree));
     right_sub_tree->root = target->right;
-    right_sub_tree->nil = t->nil;
+    right_sub_tree->nil = t->nil;    
     removed = rbtree_min(right_sub_tree);
+    free(right_sub_tree);
 
     target->key = removed->key;
   }
 
+  // 있는 자식이 successor, 둘 다 있으면 left
   if (removed->left != t->nil) successor = removed->left;
   else successor = removed->right;
 
+  // successor와 removed의 부모와 연결
   if (successor == t->nil) t->nil->parent = removed;
   successor->parent = removed->parent;
   if (removed->parent == t->nil) t->root = successor;
@@ -281,6 +288,7 @@ int rbtree_erase(rbtree *t, node_t *p) {
     else removed->parent->right = successor;
   }
   
+  // 삭제할 노드의 색깔이 블랙이면 fix
   if (removed->color == RBTREE_BLACK) rbtree_erase_fix(t, successor);
 
   return removed->key;
