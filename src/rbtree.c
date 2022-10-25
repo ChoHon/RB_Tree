@@ -28,7 +28,6 @@ void delete_nodes(rbtree *t, node_t *node) {
 }
 
 void delete_rbtree(rbtree *t) {
-  // TODO: reclaim the tree nodes's memory
   delete_nodes(t, t->root);
 
   free(t->nil);
@@ -317,13 +316,7 @@ int rbtree_inorder_travsal(node_t *node, key_t *arr, const rbtree *t, int i) {
 }
 
 int rbtree_to_array(const rbtree *t, key_t *arr, const size_t n) {
-  // TODO: implement to_array
   rbtree_inorder_travsal(t->root, arr, t, 0);
-  
-  // for (int i = 0; i < n; i++) {
-  //   printf("%d ", arr[i]);
-  // }
-  // printf("\n");
 
   return 0;
 }
