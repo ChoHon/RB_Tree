@@ -300,11 +300,10 @@ int rbtree_erase(rbtree *t, node_t *target) {
     else removed->parent->right = successor;
   }
   
-  free(removed);
-
   // 삭제할 노드의 색깔이 블랙이면 fix
   if (removed->color == RBTREE_BLACK) rbtree_erase_fix(t, successor);
-
+  free(removed);
+  
   return 1;
 }
 
