@@ -269,7 +269,7 @@ int rbtree_erase(rbtree *t, node_t *target) {
   node_t *successor = NULL;
 
   // 삭제할 노드가 트리에 없으면
-  if (target == NULL) return -1;
+  if (target == NULL) return 0;
 
   // 삭제할 노드의 자식이 둘 다 있지 않을때
   if (target->left == t->nil || target->right == t->nil) {
@@ -300,10 +300,12 @@ int rbtree_erase(rbtree *t, node_t *target) {
     else removed->parent->right = successor;
   }
   
+  free(removed);
+
   // 삭제할 노드의 색깔이 블랙이면 fix
   if (removed->color == RBTREE_BLACK) rbtree_erase_fix(t, successor);
 
-  return removed->key;
+  return 1;
 }
 
 int rbtree_inorder_travsal(node_t *node, key_t *arr, const rbtree *t, int i) {
