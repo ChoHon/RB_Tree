@@ -1,80 +1,57 @@
+#include <assert.h>
 #include "rbtree.h"
-
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
+void test_find_erase(rbtree *t, const key_t *arr, const size_t n) {
+  for (int i = 0; i < n; i++) {
+    node_t *p = rbtree_insert(t, arr[i]);
+    assert(p != NULL);
+  }
+
+  for (int i = 0; i < n; i++) {
+    node_t *p = rbtree_find(t, arr[i]);
+    assert(p != NULL);
+    assert(p->key == arr[i]);
+    rbtree_erase(t, p);
+  }
+
+  for (int i = 0; i < n; i++) {
+    node_t *p = rbtree_find(t, arr[i]);
+    assert(p == NULL);
+  }
+
+  for (int i = 0; i < n; i++) {
+    node_t *p = rbtree_insert(t, arr[i]);
+    assert(p != NULL);
+    node_t *q = rbtree_find(t, arr[i]);
+    assert(q != NULL);
+    assert(q->key == arr[i]);
+    assert(p == q);
+    rbtree_erase(t, p);
+    q = rbtree_find(t, arr[i]);
+    assert(q == NULL);
+  }
+}
+
+void test_find_erase_rand(const size_t n, const unsigned int seed) {
+  srand(seed);
+  rbtree *t = new_rbtree();
+  key_t *arr = calloc(n, sizeof(key_t));
+  for (int i = 0; i < n; i++) {
+    arr[i] = rand();
+  }
+
+  test_find_erase(t, arr, n);
+
+  free(arr);
+  delete_rbtree(t);
+}
+
 int main(int argc, char *argv[]) {
-    rbtree *t = new_rbtree();
 
-    // 10, 5, 8, 34, 67, 23, 156, 24, 2, 12, 24, 36, 990, 25
-
-    rbtree_insert(t, 10);
-    rbtree_insert(t, 5);
-    rbtree_insert(t, 8);
-    rbtree_insert(t, 34);
-    rbtree_insert(t, 67);
-    rbtree_insert(t, 23);
-    rbtree_insert(t, 156);
-    rbtree_insert(t, 24);
-    rbtree_insert(t, 2);
-    rbtree_insert(t, 12);
-    rbtree_insert(t, 24);
-    rbtree_insert(t, 36);
-    rbtree_insert(t, 990);
-    rbtree_insert(t, 25);
-
-    int n = 14;
-    key_t *res = calloc(n, sizeof(key_t));
-    rbtree_to_array(t, res, n);
-
-    // node_t *n = rbtree_find(t, 10);
-    // rbtree_erase(t, n);
-
-    // n = rbtree_find(t, 5);
-    // rbtree_erase(t, n);
-
-    // n = rbtree_find(t, 8);
-    // rbtree_erase(t, n);
-
-    // n = rbtree_find(t, 34);
-    // rbtree_erase(t, n);
-
-    // n = rbtree_find(t, 67);
-    // rbtree_erase(t, n);
-
-    // n = rbtree_find(t, 23);
-    // rbtree_erase(t, n);
-
-    // n = rbtree_find(t, 156);
-    // rbtree_erase(t, n);
-
-    // n = rbtree_find(t, 24);
-    // rbtree_erase(t, n);
-
-    // n = rbtree_find(t, 2);
-    // rbtree_erase(t, n);
-
-    // n = rbtree_find(t, 12);
-    // rbtree_erase(t, n);
-
-    // delete_rbtree(t);
-
-    // node_t *n;
-    // n = rbtree_find(t, 6);
-    // if (n != NULL) {
-    //     printf("%d\n", n->key);
-
-    //     rbtree *sub_t = new_rbtree();
-    //     sub_t->root = n->right;
-    //     sub_t->nil = t->nil;
-
-    //     printf("%d\n", rbtree_min(sub_t)->key);
-    //     printf("%d\n", rbtree_max(sub_t)->key);
-
-    //     rbtree_erase(t, n);
-    // }
-
-    // rbtree_display(t, t->root);
+    test_find_erase_rand(1000000, 55);
 
     return 0;
 }

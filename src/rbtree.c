@@ -148,8 +148,8 @@ node_t *rbtree_insert(rbtree *t, const key_t key) {
 
     while (cur_node != t->nil) {
       prev_node = cur_node;
-      if (cur_node->key < new_node->key) cur_node = cur_node->right;
-      else cur_node = cur_node->left;
+      if (cur_node->key > new_node->key) cur_node = cur_node->left;
+      else cur_node = cur_node->right;
     }
 
     new_node->parent = prev_node;
@@ -165,13 +165,14 @@ node_t *rbtree_insert(rbtree *t, const key_t key) {
 node_t *rbtree_find(const rbtree *t, const key_t key) {
   node_t *cur_node = t->root;
 
-  while (cur_node->key != key && cur_node != t->nil) {
+  while (cur_node != t->nil) {
+    if (cur_node->key == key) return cur_node;
+
     if (cur_node->key > key) cur_node = cur_node->left;
     else cur_node = cur_node->right;
   }
 
-  if (cur_node->key == key && cur_node != t->nil) return cur_node;
-  else return NULL;
+  return NULL;
 }
 
 node_t *rbtree_min(const rbtree *t) {
